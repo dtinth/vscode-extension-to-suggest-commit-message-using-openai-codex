@@ -17,7 +17,7 @@
 		"commands": [
 			{
 				"command": "automessage-codex.suggestCommitMessage",
-				"title": "Hello World"
+				"title": "Suggest commit message"
 			}
 		]
 	},
