@@ -10,13 +10,13 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:automessage-codex.helloWorld"
+		"onCommand:automessage-codex.suggestCommitMessage"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "automessage-codex.helloWorld",
+				"command": "automessage-codex.suggestCommitMessage",
 				"title": "Hello World"
 			}
 		]
