@@ -117,9 +117,30 @@ export function activate(context: vscode.ExtensionContext) {
     prefix: string,
     choices: { text: string }[],
   ): vscode.QuickPickItem[] {
-    return choices.map((choice) => ({
-      label: prefix + choice.text,
-    }))
+    let messages = choices.map(
+      (choice) => prefix + choice.text.replace(/"$/, ''),
+    )
+
+    // Deduplicate messages and sort by occurrence count
+    const count = new Map<string, number>()
+    messages = messages
+      .filter((message) => {
+        const key = message
+        if (count.has(key)) {
+          count.set(key, count.get(key)! + 1)
+          return false
+        } else {
+          count.set(key, 1)
+          return true
+        }
+      })
+      .sort((a, b) => (count.get(b) || 0) - (count.get(a) || 0))
+
+    return messages.map((message) => {
+      return {
+        label: message,
+      }
+    })
   }
 
   context.subscriptions.push(disposable)
