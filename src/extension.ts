@@ -55,20 +55,25 @@ export function activate(context: vscode.ExtensionContext) {
           )
           return
         }
+        diff = diff.slice(0, 1000)
 
         const prefix = repository.inputBox.value
         const prompt = [
+          '# Add all changed files to the index',
           '$ git add --all',
           '',
+          '# View the diff',
           '$ git diff --cached',
           diff,
           '',
+          '# View only changed lines',
           "$ git diff --cached -U0 | grep '^[+-]'",
           diff
             .split('\n')
             .filter((line) => line.startsWith('+') || line.startsWith('-'))
             .join('\n'),
           '',
+          '# Commit with a descriptive message',
           '$ git commit -m "' + prefix,
         ].join('\n')
         outputChannel.appendLine('# Prompt')
