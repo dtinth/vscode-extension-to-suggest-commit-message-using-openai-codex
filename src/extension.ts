@@ -78,6 +78,7 @@ export function activate(context: vscode.ExtensionContext) {
         quickPick.onDidAccept(() => {
           const selected = quickPick.selectedItems[0]
           repository.inputBox.value = selected.label
+          quickPick.dispose()
         })
         quickPick.show()
 
