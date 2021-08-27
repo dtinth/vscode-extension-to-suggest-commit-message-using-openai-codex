@@ -1,7 +1,12 @@
 import * as vscode from 'vscode'
+import axios from 'axios'
 import { GitExtension } from './vendor/git'
 
 export function activate(context: vscode.ExtensionContext) {
+  const outputChannel = vscode.window.createOutputChannel(
+    'Suggest commit message',
+  )
+
   async function getApiKey(): Promise<string | undefined> {
     let apiKey = context.globalState.get<string>('apiKey')
     if (!apiKey) {
@@ -34,12 +39,58 @@ export function activate(context: vscode.ExtensionContext) {
       if (!apiKey) {
         return
       }
+
       const gitExtension =
         vscode.extensions.getExtension<GitExtension>('vscode.git')!.exports
       const git = gitExtension.getAPI(1)
       const repository = git.repositories[0]
       const diff = await repository.diff(true)
-      vscode.window.showInformationMessage(diff)
+
+      const prompt = [
+        '$ git add --all',
+        '',
+        '$ git diff --cached',
+        diff,
+        '',
+        "$ git diff --cached -U0 | grep '^[+-]'",
+        diff
+          .split('\n')
+          .filter((line) => line.startsWith('+') || line.startsWith('-'))
+          .join('\n'),
+        '',
+        '$ git commit -m "',
+      ].join('\n')
+      outputChannel.appendLine('# Prompt')
+      outputChannel.appendLine(prompt)
+
+      try {
+        const response = await axios.post(
+          'https://api.openai.com/v1/engines/davinci-codex/completions',
+          {
+            prompt,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            max_tokens: 32,
+            n: 10,
+            stop: ['\n'],
+            temperature: 0.5,
+            // logprobs: 2,
+          },
+          {
+            headers: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              Authorization: 'Bearer ' + apiKey,
+            },
+          },
+        )
+        outputChannel.appendLine('# Response')
+        outputChannel.appendLine(JSON.stringify(response.data, null, 2))
+      } catch (error: any) {
+        vscode.window.showErrorMessage(
+          'Unable to get suggestions: ' + error.message,
+        )
+        outputChannel.appendLine('# Error')
+        outputChannel.appendLine(error.stack)
+      }
     },
   )
 
