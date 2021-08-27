@@ -56,6 +56,7 @@ export function activate(context: vscode.ExtensionContext) {
           return
         }
 
+        const prefix = repository.inputBox.value
         const prompt = [
           '$ git add --all',
           '',
@@ -68,7 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
             .filter((line) => line.startsWith('+') || line.startsWith('-'))
             .join('\n'),
           '',
-          '$ git commit -m "',
+          '$ git commit -m "' + prefix,
         ].join('\n')
         outputChannel.appendLine('# Prompt')
         outputChannel.appendLine(prompt)
@@ -76,7 +77,7 @@ export function activate(context: vscode.ExtensionContext) {
         const quickPick = vscode.window.createQuickPick()
         quickPick.onDidAccept(() => {
           const selected = quickPick.selectedItems[0]
-          repository.inputBox.value = selected.label
+          repository.inputBox.value = prefix + selected.label
         })
         quickPick.show()
 
