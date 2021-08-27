@@ -77,7 +77,7 @@ export function activate(context: vscode.ExtensionContext) {
         const quickPick = vscode.window.createQuickPick()
         quickPick.onDidAccept(() => {
           const selected = quickPick.selectedItems[0]
-          repository.inputBox.value = prefix + selected.label
+          repository.inputBox.value = selected.label
         })
         quickPick.show()
 
@@ -101,7 +101,7 @@ export function activate(context: vscode.ExtensionContext) {
         )
         outputChannel.appendLine('# Response')
         outputChannel.appendLine(JSON.stringify(response.data, null, 2))
-        quickPick.items = createQuickPickItems(response.data.choices)
+        quickPick.items = createQuickPickItems(prefix, response.data.choices)
       } catch (error: any) {
         vscode.window.showErrorMessage(
           'Unable to suggest commit message: ' + error.message,
@@ -113,10 +113,11 @@ export function activate(context: vscode.ExtensionContext) {
   )
 
   function createQuickPickItems(
+    prefix: string,
     choices: { text: string }[],
   ): vscode.QuickPickItem[] {
     return choices.map((choice) => ({
-      label: choice.text,
+      label: prefix + choice.text,
     }))
   }
 
