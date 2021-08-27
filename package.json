@@ -1,6 +1,6 @@
 {
-	"name": "fresh-extension",
-	"displayName": "fresh-extension",
+	"name": "automessage-codex",
+	"displayName": "automessage-codex",
 	"description": "",
 	"version": "0.0.1",
 	"engines": {
@@ -10,13 +10,13 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:fresh-extension.helloWorld"
+		"onCommand:automessage-codex.helloWorld"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "fresh-extension.helloWorld",
+				"command": "automessage-codex.helloWorld",
 				"title": "Hello World"
 			}
 		]
