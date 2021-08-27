@@ -45,7 +45,16 @@ export function activate(context: vscode.ExtensionContext) {
           vscode.extensions.getExtension<GitExtension>('vscode.git')!.exports
         const git = gitExtension.getAPI(1)
         const repository = git.repositories[0]
-        const diff = await repository.diff(true)
+        let diff = await repository.diff(true)
+        if (!diff.trim()) {
+          diff = await repository.diff(false)
+        }
+        if (!diff.trim()) {
+          vscode.window.showInformationMessage(
+            'No changes to commit. Nothing to suggest',
+          )
+          return
+        }
 
         const prompt = [
           '$ git add --all',
