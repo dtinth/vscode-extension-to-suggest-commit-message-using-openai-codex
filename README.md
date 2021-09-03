@@ -4,6 +4,10 @@ Generate a commit message using OpenAI Codex model.
 
 ![Screenshot](images/example.png)
 
+If you put in some text in the commit message, it will be part of the prompt to send to OpenAI API. This increases the chance of getting a good quality commit message.
+
+![Screenshot](images/prefilled.png)
+
 ## Features
 
 - A **Suggest Commit Message** command.
